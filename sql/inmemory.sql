@@ -10,10 +10,15 @@ end;
 
 alter table jsonflights_col_large noparallel no inmemory;
 
-set timing on
-set autotrace on explain
+exec dbms_stats.gather_table_stats('ORADEV','JSONFLIGHTS_COL_LARGE')
 
-select count(*) from JSONFLIGHTS_COL_LARGE
+alter table jsonflights_col_large noparallel no inmemory;
+
+select count(*) from jsonflights_col_large;
+
+alter table jsonflights_col_large parallel 16;
+
+select count(*) from jsonflights_col_large;
 
 alter table jsonflights_col_large inmemory priority critical;
 
@@ -23,13 +28,9 @@ select owner,
        bytes, 
        bytes_not_populated, 
        populate_status
-from v$im_segments
+from v$im_segments;
 
-select count(*) from JSONFLIGHTS_COL_LARGE
-
-alter table JSONFLIGHRS_COL_LARGE parallel 8;
-
-select count(*) from JSONFLIGHTS_COL_LARGE;
+select count(*) from jsonflights_col_large;
 
 
 
