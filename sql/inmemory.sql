@@ -12,6 +12,8 @@ alter table jsonflights_col_large noparallel no inmemory;
 
 exec dbms_stats.gather_table_stats('ORADEV','JSONFLIGHTS_COL_LARGE')
 
+alter session set optimizer_ignore_hints=false;
+
 alter table jsonflights_col_large noparallel no inmemory;
 
 select count(*) from jsonflights_col_large;
@@ -20,7 +22,7 @@ alter table jsonflights_col_large parallel 16;
 
 select count(*) from jsonflights_col_large;
 
-alter table jsonflights_col_large inmemory priority critical;
+alter table jsonflights_col_large inmemory priority critical duplicate;
 
 select owner, 
        segment_name, 
@@ -31,6 +33,10 @@ select owner,
 from v$im_segments;
 
 select count(*) from jsonflights_col_large;
+
+alter table jsonflights_col_large inmemory cellmemory;
+
+alter table jsonflights_col_large inmemory priority critical duplicate;
 
 
 
