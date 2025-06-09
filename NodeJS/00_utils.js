@@ -9,8 +9,8 @@ async function displayExecutionPlan(db,collection,statement,hint) {
     console.log(result.queryPlanner);
 }
 
-async function displaySQLExecutionPlan(db,sqlStatement) {
-    result = db.aggregate([ {$sql: {statement: sqlStatement}}]).explain();
+async function displaySQLExecutionPlan(db,sqlStatement,hint) {
+    result = db.aggregate([ {$sql: {statement: sqlStatement}}],{"hint" : {"$service" : "TPURGENT"}}).explain();
     console.log((await result).stages[0].$sql);    
 }
 

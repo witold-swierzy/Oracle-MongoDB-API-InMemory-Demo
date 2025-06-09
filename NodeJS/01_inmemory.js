@@ -43,11 +43,13 @@ async function inmemory() {
         // 1. b. counting documents using SQL
         console.log("1. b. SQL command");
         startTimeSQL = Date.now();
-        result = db.aggregate([{ $sql: "select count(*) from jsonflights_col_large"}]);
+        result = db.aggregate([{ $sql: "select count(*) from jsonflights_col_large"}],{"hint" : {"$service" : "TPURGENT"}});
         for await (res of result);
         endTimeSQL   = Date.now();
         execTimeSQL  = endTimeSQL - startTimeSQL;
         console.log("No inmemory, No parallel, SQL execution test. Execution time (ms): "+execTimeSQL);
+        console.log("SQL execution plan : ");
+        await utils.displaySQLExecutionPlan(db,"select count(*) from jsonflights_col_large");
         
         // 2. no in memory parallel 16
         console.log("Test #2 : no inmemory, parallel 16");
@@ -61,15 +63,17 @@ async function inmemory() {
         endTimeMDB   = Date.now();
         execTimeMDB  = endTimeMDB - startTimeMDB;
         console.log("No inmemory, Parallel execution test. Execution time (ms): "+execTimeMDB);
-
+        console.log(await db.collection("JSONFLIGHTS_COL_LARGE").countDocuments());
         // 2. b. counting documents using SQL
         console.log("2. b. SQL command");
         startTimeSQL = Date.now();
-        result = db.aggregate([{ $sql: "select count(*) from jsonflights_col_large"}]);
+        result = db.aggregate([{ $sql: "select /*+ MONITOR */ count(*) from jsonflights_col_large"}],{"hint" : {"$service" : "TPURGENT"}});
         for await (res of result);
         endTimeSQL   = Date.now();
         execTimeSQL  = endTimeSQL - startTimeSQL;
         console.log("No inmemory, parallel 16, SQL execution test. Execution time (ms): "+execTimeSQL);
+        console.log("SQL execution plan : ");
+        await utils.displaySQLExecutionPlan(db,"select count(*) from jsonflights_col_large");
         
         // 3. in memory parallel 16
         console.log("Test #3 : inmemory, parallel 16");
@@ -100,11 +104,13 @@ async function inmemory() {
         // 3. b. counting documents using SQL
         console.log("3. b. SQL command");
         startTimeSQL = Date.now();
-        result = db.aggregate([{ $sql: "select count(*) from jsonflights_col_large"}]);
+        result = db.aggregate([{ $sql: "select count(*) from jsonflights_col_large"}],{"hint" : {"$service" : "TPURGENT"}});
         for await (res of result);
         endTimeSQL   = Date.now();
         execTimeSQL  = endTimeSQL - startTimeSQL;
         console.log("InMemory, parallel 16, SQL execution test. Execution time (ms): "+execTimeSQL);
+        console.log("SQL execution plan : ");
+        await utils.displaySQLExecutionPlan(db,"select count(*) from jsonflights_col_large");
 
         // 4. in memory noparallel
         console.log("Test #4 : inmemory, noparallel");
@@ -122,11 +128,13 @@ async function inmemory() {
         // 4. b. counting documents using SQL
         console.log("4. b. SQL command");
         startTimeSQL = Date.now();
-        result = db.aggregate([{ $sql: "select count(*) from jsonflights_col_large"}]);
+        result = db.aggregate([{ $sql: "select count(*) from jsonflights_col_large"}],{"hint" : {"$service" : "TPURGENT"}});
         for await (res of result);
         endTimeSQL   = Date.now();
         execTimeSQL  = endTimeSQL - startTimeSQL;
         console.log("InMemory, noparallel, SQL execution test. Execution time (ms): "+execTimeSQL); 
+        console.log("SQL execution plan : ");
+        await utils.displaySQLExecutionPlan(db,"select count(*) from jsonflights_col_large");
     }
     catch (e) {
         console.error(e);
