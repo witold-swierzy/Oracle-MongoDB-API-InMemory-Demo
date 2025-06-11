@@ -67,7 +67,7 @@ async function inmemory() {
         // 2. b. counting documents using SQL
         console.log("2. b. SQL command");
         startTimeSQL = Date.now();
-        result = db.aggregate([{ $sql: "select /*+ MONITOR */ count(*) from jsonflights_col_large"}],{"hint" : {"$service" : "TPURGENT"}});
+        result = db.aggregate([{ $sql: "select count(*) from jsonflights_col_large"}],{"hint" : {"$service" : "TPURGENT"}});
         for await (res of result);
         endTimeSQL   = Date.now();
         execTimeSQL  = endTimeSQL - startTimeSQL;
@@ -134,7 +134,7 @@ async function inmemory() {
         execTimeSQL  = endTimeSQL - startTimeSQL;
         console.log("InMemory, noparallel, SQL execution test. Execution time (ms): "+execTimeSQL); 
         console.log("SQL execution plan : ");
-        await utils.displaySQLExecutionPlan(db,"select count(*) from jsonflights_col_large");
+        await utils.displaySQLExecutionPlan(db,"select count(*) from jsonflights_col_large"); 
     }
     catch (e) {
         console.error(e);
